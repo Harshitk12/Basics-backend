@@ -47,4 +47,10 @@ async function signin(req,res){
   res.json({ message: 'Login successful'});
 }
 
-module.exports={signin,signup}
+function signout(req, res) {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Logged out successfully' });
+}
+
+
+module.exports={signin,signup,signout}

@@ -1,14 +1,21 @@
-const params =new URLSearchParams(window.location.search);
-const userId = params.get('userId');
-
 const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
+const signout=document.getElementById('signout-btn')
 
 const API_URL = "http://localhost:5000/api/tasks"; // backend endpoint
 
 // Load existing tasks on page load
 window.addEventListener("DOMContentLoaded", loadTasks);
+
+signout.addEventListener('click',async ()=>{
+  const res=await fetch('http://localhost:5000/api/users/logout',{
+    method:'POST',
+    credentials:"include"
+  })
+  if(res.ok)
+    window.location.href='land.html'
+})
 
 // Handle form submission
 form.addEventListener("submit", async (e) => {
@@ -22,7 +29,7 @@ form.addEventListener("submit", async (e) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials:"include",
-      body: JSON.stringify({ text,userId })
+      body: JSON.stringify({ text})
     });
 
     const newTask = await res.json();
