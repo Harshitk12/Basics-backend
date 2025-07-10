@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 
 const taskRoutes = require('./routes/tasks');
@@ -41,10 +42,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post('/api/upload', upload.single('file'), (req, res) => {
+ 
+const token=req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized. No token found in cookies.' });
+  }
+
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   res.json({ message: 'File uploaded', filePath: `/uploads/${req.file.filename}` });
 });
-
 // Connect to DB and Start Server
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {

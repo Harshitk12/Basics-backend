@@ -18,7 +18,13 @@
     </form>
     <ul id="todo-list"></ul>
   </div>
-
+  <button id="upload">Upload</button>
   <script src="script.js"></script>
+  <script>
+    const upload=document.getElementById('upload')
+    upload.addEventListener('click',()=>{
+      window.location.href='multer.html'
+    })
+  </script>
 </body>
 </html>
