@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const multer = require('multer');
 const path = require('path');
 const cookieParser = require("cookie-parser");
 
@@ -26,6 +27,23 @@ app.use(express.static(path.join(__dirname, 'views')));
 // Routes
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes); 
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // folder must exist
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext); // e.g., 16534834341.png
+  }
+});
+
+const upload = multer({ storage });
+
+app.post('/api/upload', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  res.json({ message: 'File uploaded', filePath: `/uploads/${req.file.filename}` });
+});
 
 // Connect to DB and Start Server
 mongoose.connect(process.env.MONGO_URI)
