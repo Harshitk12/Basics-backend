@@ -10,12 +10,13 @@ const {
 } = require('../controllers/taskController');
 
 const {upload} =require('../middleware/upload');
+const auth=require('../middleware/auth');
 
-router.get('/', getTasks);
-router.post('/', addTask);
-router.delete('/', deleteTask);
-router.patch('/done', toggleDone);
+router.get('/',auth, getTasks);
+router.post('/',auth, addTask);
+router.delete('/',auth, deleteTask);
+router.patch('/done',auth, toggleDone);
 
-router.post('/upload',upload.single('file'),  uploadImg);
+router.post('/upload',auth,upload.single('file'),  uploadImg);
 
 module.exports = router;
