@@ -1,4 +1,5 @@
 const Task = require('../models/Task');
+const img=require('../models/img');
 const jwt = require("jsonwebtoken");
 const SECRET = "supersecurekey";
 
@@ -32,9 +33,17 @@ exports.toggleDone = async (req, res) => {
   res.json(task);
 };
 
+exports.getImg=async (req,res)=>{
+  const images=await img.find({user:req.user.userId})
+  return res.json(images);
+}
+
 async function uploadImg(req, res){
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  res.json({ message: 'File uploaded', filePath: `/uploads/${req.file.filename}` });
+  const newimg=new img({url:req.file.path,user:req.user.userId});
+  await newimg.save();
+  res.json({message:'success'});
 }
+
 
 exports.uploadImg=uploadImg;

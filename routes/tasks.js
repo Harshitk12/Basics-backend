@@ -6,7 +6,8 @@ const {
   addTask,
   deleteTask,
   toggleDone,
-  uploadImg
+  uploadImg,
+  getImg
 } = require('../controllers/taskController');
 
 const {upload} =require('../middleware/upload');
@@ -16,6 +17,7 @@ router.get('/',auth, getTasks);
 router.post('/',auth, addTask);
 router.delete('/',auth, deleteTask);
 router.patch('/done',auth, toggleDone);
+router.get('/images',auth,getImg);
 
 router.post('/upload',auth,upload.single('file'),  uploadImg);
 

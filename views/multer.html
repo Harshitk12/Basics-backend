@@ -1,24 +1,104 @@
-<form id="upload-form" enctype="multipart/form-data">
-  <input type="file" name="file" id="file-input" />
-  <button type="submit">Upload</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-<script>
-  const form = document.getElementById('upload-form');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const fileInput = document.getElementById('file-input');
-    const formData = new FormData();
-    formData.append('file', fileInput.files[0]);
+    form {
+      height: 50px;
+      width: 50vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 20px;
+    }
 
-    const res = await fetch('http://localhost:5000/api/tasks/upload', {
-      method: 'POST',
-      credentials:"include",
-      body: formData
+    .gallery {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      width: 200px;
+      text-align: center;
+    }
+
+    .card img {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="file" id="file-input" />
+    <button type="submit">Upload</button>
+  </form>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    const form = document.getElementById('upload-form');
+    const gallery = document.getElementById('gallery');
+    printImages();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('file-input');
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      const res = await fetch('http://localhost:5000/api/tasks/upload', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+      printImages();
     });
+    async function printImages(){
+      const res = await fetch('http://localhost:5000/api/tasks/images', {
+        credentials: 'include'
+      });
+      const images = await res.json(); // Expects [{ url, user }, ...]
+      
+      // Clear gallery before adding new items (optional)
+      gallery.innerHTML = '';
 
-    const data = await res.json();
-    alert(data.message);
-    console.log(data.filePath);
-  });
-</script>
+      images.forEach(image => {
+        const card = document.createElement('div');
+        card.className = 'card';
+    
+        const img = document.createElement('img');
+        img.src = `http://localhost:5000/${image.url.replace(/\\/g, '/')}`;
+        img.alt = "Uploaded Image";
+
+        const info = document.createElement('p');
+        info.textContent = `Uploaded by: ${image.user}`;
+
+        card.appendChild(img);
+        card.appendChild(info);
+        gallery.appendChild(card);
+      });
+    }
+      
+    
+  </script>
+
+</body>
+</html>

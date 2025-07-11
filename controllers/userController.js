@@ -38,12 +38,7 @@ async function signin(req,res){
     return res.status(401).json({ message: 'Invalid credentials' });
   }
   const token = jwt.sign({ userId: user._id }, SECRET, { expiresIn: "1h" });
-  res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // true in production with HTTPS
-      sameSite: "Lax",
-      maxAge: 3600000 // 1 hour
-    });
+  res.cookie("token", token);
   res.json({ message: 'Login successful'});
 }
 
