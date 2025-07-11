@@ -46,3 +46,16 @@ exports.toggleDone = async (req, res) => {
   await task.save();
   res.json(task);
 };
+
+async function uploadImg(req, res){
+ 
+const token=req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized. No token found in cookies.' });
+  }
+
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  res.json({ message: 'File uploaded', filePath: `/uploads/${req.file.filename}` });
+}
+
+exports.uploadImg=uploadImg;
