@@ -6,10 +6,14 @@ const orderSchema = new mongoose.Schema({
     {
       product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       quantity: Number,
-    },
+    }
   ],
   totalPrice: Number,
-  status: { type: String, default: "Pending" },
-});
+  status: {
+    type: String,
+    enum: ["Pending", "Completed", "Cancelled"],
+    default: "Pending"
+  },
+}, { timestamps: true });
 
 module.exports = mongoose.model("Order", orderSchema);
