@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <Title>Test</Title>
+    </head>
+    <body>
+        <h1></h1>
+        <form>
+            <input type="text" placeholder="name">
+            <input type="email" placeholder="email">
+            <button type="submit"></button>
+        </form>
+        <ul id="userList"></ul>
+        <form>
+            <input type="text" >
+            <button type="submit"></button>
+        </form>
+        <ul id="searchedUser"></ul>
+        <script>
+            const heading=document.getElementsByTagName('h1')[0];
+            const form=document.getElementsByTagName('form')[0];
+            const userList=document.getElementById('userList');
+            const form2=document.getElementsByTagName('form')[1];
+            const searchedUser=document.getElementById('searchedUser')
+
+            fetch("http://localhost:8000/user")
+            .then((res)=>res.json())
+            .then((data)=>{
+                userList.innerHTML="";
+                data.forEach((user)=>{
+                    const list=document.createElement('li');
+                    list.innerText=`${user.name} - ${user.email}`
+                    userList.appendChild(list);
+                })
+            })
+
+            form.addEventListener('submit', (e)=>{
+                e.preventDefault();
+                const name=document.getElementsByTagName('input')[0].value;
+                const email=document.getElementsByTagName('input')[1].value;
+                console.log(name,email)
+                fetch('http://localhost:8000/user/create',{
+                    method:'POST',
+                    headers :{
+                        'Content-Type' : 'application/json'
+                    },
+                    body :JSON.stringify({
+                        name:name,
+                        email:email
+                    })
+                })
+                .then((res)=>res.json())
+                .then((msg)=>console.log(msg))
+                .catch((err)=>console.log(err))
+            })
+
+            form2.addEventListener('submit',(e)=>{
+                e.preventDefault();
+                const userId=document.getElementsByTagName('input')[2].value;
+                fetch(`http://localhost:8000/user/${userId}`)
+                .then((res)=>res.json())
+                .then((data)=>{
+                    searchedUser.innerText=`${data.name} - ${data.email}`
+                })
+            })
+        </script>
+    </body>
+</html>

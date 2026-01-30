@@ -1,7 +1,6 @@
 const Order = require("../models/Order");
-const Product = require("../models/Product"); // You forgot to require this
+const Product = require("../models/Product"); 
 
-// Create Order
 exports.createOrder = async (req, res) => {
   try {
     const { products } = req.body;
@@ -36,7 +35,6 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// Get all orders of the logged-in user
 exports.getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id }).populate("products.product");
