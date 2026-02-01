@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>URL Shortener</title>
+    </head>
+    <body>
+        <form class="urlForm">
+            <input type="text" class="redirectUrl">
+            <button type="submit" >Enter</button>
+        </form>
+        <script>
+            const urlForm=document.querySelector('.urlForm');
+
+            urlForm.addEventListener('submit',(e)=>{
+                e.preventDefault();
+                const redirectUrl=document.querySelector('.redirectUrl').value;
+                fetch('http://localhost:8000/url',{
+                    method : 'POST',
+                    headers :{
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({
+                        url : redirectUrl
+                    })
+                })
+            })
+        </script>
+    </body>
+
+</html>
